@@ -4,14 +4,73 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] Transform plsyerHandTransform;
-    [SerializeField] GameObject cardPrefab;
+    [SerializeField] Transform plsyerHandTransform,
+                               enemyHandTransform;
+    [SerializeField] CardController cardPrefab;
+
+    bool isPlayerTurn;
+
     void Start()
     {
-        CreateCard(plsyerHandTransform);
+        StartGame();
     }
+
+    void StartGame()
+    {
+        SettingInitHand();
+        isPlayerTurn = true;
+        TurnCalc();
+    }
+
+    void SettingInitHand()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            CreateCard(plsyerHandTransform);
+            CreateCard(enemyHandTransform);
+        }
+    }
+
+    void TurnCalc()
+    {
+        if (isPlayerTurn)
+        {
+            PlayerTurn();
+        }
+        else
+        {
+            EnemyTurn();
+        }
+    }
+
+    public void ChageTurn()
+    {
+        isPlayerTurn = !isPlayerTurn;
+        if (isPlayerTurn)
+        {
+            CreateCard(plsyerHandTransform);
+        }
+        else
+        {
+            CreateCard(enemyHandTransform);
+        }
+        TurnCalc();
+    }
+
+    void PlayerTurn()
+    {
+        Debug.Log("PlayerTurn");
+    }
+
+    void EnemyTurn()
+    {
+        Debug.Log("EnemyTurn");
+        ChageTurn();
+    }
+
     void CreateCard(Transform hand)
     {
-        Instantiate(cardPrefab, hand, false);
+        CardController card = Instantiate(cardPrefab, hand, false);
+        card.Init(1);
     }
 }

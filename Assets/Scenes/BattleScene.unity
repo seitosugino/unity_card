@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 43036772}
   - component: {fileID: 43036771}
   - component: {fileID: 43036770}
+  - component: {fileID: 43036773}
   m_Layer: 5
   m_Name: PlayerHand
   m_TagString: Untagged
@@ -226,6 +227,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 43036768}
   m_CullTransparentMesh: 1
+--- !u!114 &43036773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43036768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c3e2cf4c6364d33806d8ce0f1e5e8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &474816473
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,7 +519,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plsyerHandTransform: {fileID: 43036769}
-  cardPrefab: {fileID: 2202863915866195447, guid: 9f08d9098719e4744807f4f8eec24eef, type: 3}
+  enemyHandTransform: {fileID: 1284721461}
+  cardPrefab: {fileID: 23881634461072336, guid: 9f08d9098719e4744807f4f8eec24eef, type: 3}
 --- !u!4 &775227314
 Transform:
   m_ObjectHideFlags: 0
@@ -800,6 +814,7 @@ GameObject:
   - component: {fileID: 1183926559}
   - component: {fileID: 1183926558}
   - component: {fileID: 1183926557}
+  - component: {fileID: 1183926560}
   m_Layer: 5
   m_Name: PlayerField
   m_TagString: Untagged
@@ -891,6 +906,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1183926555}
   m_CullTransparentMesh: 1
+--- !u!114 &1183926560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183926555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c3e2cf4c6364d33806d8ce0f1e5e8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1258811766
 GameObject:
   m_ObjectHideFlags: 0
@@ -1635,7 +1662,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1936580184}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 775227313}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ChageTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1936580184
 MonoBehaviour:
   m_ObjectHideFlags: 0
