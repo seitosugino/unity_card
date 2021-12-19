@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text playerHeroHpText;
     [SerializeField] Text enemyHeroHpText;
 
+    [SerializeField] Transform playerHero;
 
     public int playerManaCost;
     int enemyManaCost;
@@ -32,6 +33,9 @@ public class GameManager : MonoBehaviour
     int enemyDefaultManaCost;
     [SerializeField] Text playerManaCostText;
     [SerializeField] Text enemyManaCostText;
+
+    [SerializeField] Text timeCountText;
+    int timeCount;
 
     public static GameManager instance;
 
@@ -53,10 +57,8 @@ public class GameManager : MonoBehaviour
         resultPanel.SetActive(false);
         playerHeroHp = 30;
         enemyHeroHp = 30;
-        playerManaCost = 1;
-        enemyManaCost = 1;
-        playerDefaultManaCost = 1;
-        enemyDefaultManaCost = 1;
+        playerManaCost = playerDefaultManaCost = 1;
+        enemyManaCost = enemyDefaultManaCost = 1;
         ShowHeroHP();
         ShowManaCost();
         SettingInitHand();
@@ -131,24 +133,53 @@ public class GameManager : MonoBehaviour
     void CreateCard(int cardID, Transform hand)
     {
         CardController card = Instantiate(cardPrefab, hand, false);
-        card.Init(cardID);
+        if (hand.name == "PlayerHand")
+        {
+            card.Init(cardID, true);
+        }
+        else
+        {
+            card.Init(cardID, false);
+        }
     }
 
     void TurnCalc()
     {
+        StopAllCoroutines();
+        StartCoroutine(CountDown());
         if (isPlayerTurn)
         {
             PlayerTurn();
         }
         else
         {
-            EnemyTurn();
+            StartCoroutine(EnemyTurn());
         }
+    }
+
+    IEnumerator CountDown()
+    {
+        timeCount = 10;
+        timeCountText.text = timeCount.ToString();
+
+        while (timeCount > 0)
+        {
+            yield return new WaitForSeconds(1);
+            timeCount--;
+            timeCountText.text = timeCount.ToString();
+        }
+        ChageTurn();
     }
 
     public void ChageTurn()
     {
         isPlayerTurn = !isPlayerTurn;
+
+        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(playerFieldCardList, false);
+        CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+        SettingCanAttackView(enemyFieldCardList, false);
+
         if (isPlayerTurn)
         {
             playerDefaultManaCost++;
@@ -165,54 +196,74 @@ public class GameManager : MonoBehaviour
         TurnCalc();
     }
 
+    void SettingCanAttackView(CardController[] fieldCardList, bool canAttack)
+    {
+        foreach (CardController card in fieldCardList)
+        {
+            card.SetCanAttack(canAttack);
+        }
+    }
+
     void PlayerTurn()
     {
         Debug.Log("PlayerTurn");
         CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        foreach (CardController card in playerFieldCardList)
-        {
-            card.SetCanAttack(true);
-        }
+        SettingCanAttackView(playerFieldCardList, true);
     }
 
-    void EnemyTurn()
+    IEnumerator EnemyTurn()
     {
         Debug.Log("EnemyTurn");
 
         CardController[] enemyFieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        foreach (CardController card in enemyFieldCardList)
-        {
-            card.SetCanAttack(true);
-        }
+        SettingCanAttackView(enemyFieldCardList, true);
+
+        yield return new WaitForSeconds(1);
 
         CardController[] handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
-        CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
-        if (selectableHandCardList.Length > 0)
-        {
-            CardController enemyCard = selectableHandCardList[0];
-            enemyCard.movement.SetCardTransform(enemyFieldTransform);
 
+        while (Array.Exists(handCardList, card => card.model.cost <= enemyManaCost))
+        {
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= enemyManaCost);
+            CardController enemyCard = selectableHandCardList[0];
+            StartCoroutine(enemyCard.movement.MoveToField(enemyFieldTransform));
             ReduceManaCost(enemyCard.model.cost, false);
             enemyCard.model.isFieldCard = true;
+            handCardList = enemyHandTransform.GetComponentsInChildren<CardController>();
+            yield return new WaitForSeconds(1);
         }
 
+        yield return new WaitForSeconds(1);
+
         CardController[] fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
-        CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack);
-        CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
-        if (enemyCanAttackCardList.Length > 0)
+
+        while (Array.Exists(fieldCardList, card => card.model.canAttack))
         {
+            CardController[] enemyCanAttackCardList = Array.FindAll(fieldCardList, card => card.model.canAttack);
+            CardController[] playerFieldCardList = playerFieldTransform.GetComponentsInChildren<CardController>();
             CardController attacker = enemyCanAttackCardList[0];
 
             if (playerFieldCardList.Length > 0)
             {
                 CardController defender = playerFieldCardList[0];
+                StartCoroutine(attacker.movement.MoveToTarget(defender.transform));
+                yield return new WaitForSeconds(0.25f);
                 CardsBattle(attacker, defender);
             }
             else
             {
+                StartCoroutine(attacker.movement.MoveToTarget(playerHero));
+                yield return new WaitForSeconds(0.25f);
                 AttackToHero(attacker, false);
+                yield return new WaitForSeconds(0.25f);
+                CheackHeroHP();
             }
+            fieldCardList = enemyFieldTransform.GetComponentsInChildren<CardController>();
+            yield return new WaitForSeconds(1);
         }
+
+        yield return new WaitForSeconds(1);
+
         ChageTurn();
     }
 
@@ -246,22 +297,27 @@ public class GameManager : MonoBehaviour
         }
         attacker.SetCanAttack(false);
         ShowHeroHP();
-        CheackHeroHP();
     }
 
     void CheackHeroHP()
     {
         if (playerHeroHp <= 0 || enemyHeroHp <= 0)
         {
-            resultPanel.SetActive(true);
-            if (playerHeroHp <= 0)
-            {
-                resultText.text = "LOSE";
-            }
-            else
-            {
-                resultText.text = "WIN";
-            }
+            ShowResultPanel(playerHeroHp);
+        }
+    }
+
+    void ShowResultPanel(int heroHp)
+    {
+        StopAllCoroutines();
+        resultPanel.SetActive(true);
+        if (heroHp <= 0)
+        {
+            resultText.text = "LOSE";
+        }
+        else
+        {
+            resultText.text = "WIN";
         }
     }
 }

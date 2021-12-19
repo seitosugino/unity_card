@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
@@ -54,9 +56,31 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
-    public void SetCardTransform(Transform parentTransform)
+    public IEnumerator MoveToField(Transform field)
     {
-        defaultParent = parentTransform;
+        transform.SetParent(defaultParent.parent);
+        transform.DOMove(field.position, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        defaultParent = field;
         transform.SetParent(defaultParent);
+    }
+
+    public IEnumerator MoveToTarget(Transform target)
+    {
+        Vector3 currentPosition = transform.position;
+        int siblingIndex = transform.GetSiblingIndex();
+
+        transform.SetParent(defaultParent.parent);
+        transform.DOMove(target.position, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        transform.DOMove(currentPosition, 0.25f);
+        yield return new WaitForSeconds(0.25f);
+        transform.SetParent(defaultParent);
+        transform.SetSiblingIndex(siblingIndex);
+    }
+
+    void Start()
+    {
+        defaultParent = transform.parent;
     }
 }

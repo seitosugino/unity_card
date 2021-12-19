@@ -12,8 +12,9 @@ public class CardModel
     public bool isAlive;
     public bool canAttack;
     public bool isFieldCard;
+    public bool isPlayerCard;
 
-    public CardModel(int cardID)
+    public CardModel(int cardID, bool isPlayer)
     {
         CardEntity cardEntity = Resources.Load<CardEntity>("CardEntityList/Card"+cardID);
         name = cardEntity.name;
@@ -22,6 +23,7 @@ public class CardModel
         cost = cardEntity.cost;
         icon = cardEntity.icon;
         isAlive = true;
+        isPlayerCard = isPlayer;
     }
 
     void Damage(int dmg)

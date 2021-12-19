@@ -15,6 +15,11 @@ public class AttackedCard : MonoBehaviour, IDropHandler
             return;
         }
 
+        if (attacker.model.isPlayerCard == defender.model.isPlayerCard)
+        {
+            return;
+        }
+
         if (attacker.model.canAttack)
         {
             GameManager.instance.CardsBattle(attacker, defender);
