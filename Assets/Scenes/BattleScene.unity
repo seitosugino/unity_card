@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 735832079}
   - component: {fileID: 735832078}
   - component: {fileID: 735832077}
+  - component: {fileID: 735832080}
   m_Layer: 5
   m_Name: EnemyField
   m_TagString: Untagged
@@ -570,6 +571,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 735832075}
   m_CullTransparentMesh: 1
+--- !u!114 &735832080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735832075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8fa1f93b2324476a663779df616305, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &775227312
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,20 +612,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57277071ba3984f918a9b87a96b7dfc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resultPanel: {fileID: 968528546}
-  resultText: {fileID: 558650611}
+  enemyAI: {fileID: 1285906770}
+  uiManager: {fileID: 1104520631}
+  player: {fileID: 1978098575}
+  enemy: {fileID: 1285906771}
   playerHandTransform: {fileID: 43036769}
   playerFieldTransform: {fileID: 1183926556}
   enemyHandTransform: {fileID: 1284721461}
   enemyFieldTransform: {fileID: 735832076}
   cardPrefab: {fileID: 23881634461072336, guid: 9f08d9098719e4744807f4f8eec24eef, type: 3}
-  playerHeroHpText: {fileID: 1073129742}
-  enemyHeroHpText: {fileID: 1751487511}
+  isPlayerTurn: 0
   playerHero: {fileID: 1978098571}
-  playerManaCost: 0
-  playerManaCostText: {fileID: 1922684705}
-  enemyManaCostText: {fileID: 1461943964}
-  timeCountText: {fileID: 602148978}
 --- !u!4 &775227314
 Transform:
   m_ObjectHideFlags: 0
@@ -640,7 +650,7 @@ GameObject:
   - component: {fileID: 968528549}
   - component: {fileID: 968528548}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: ResultPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,6 +884,7 @@ GameObject:
   - component: {fileID: 1104520629}
   - component: {fileID: 1104520628}
   - component: {fileID: 1104520627}
+  - component: {fileID: 1104520631}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -973,6 +984,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1104520631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104520626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34822dd30e7084772b908cb5e3319057, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resultPanel: {fileID: 968528546}
+  resultText: {fileID: 558650611}
+  playerHeroHpText: {fileID: 1073129742}
+  enemyHeroHpText: {fileID: 1751487511}
+  playerManaCostText: {fileID: 1922684705}
+  enemyManaCostText: {fileID: 1461943964}
+  timeCountText: {fileID: 602148978}
 --- !u!1 &1183926555
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,6 +1016,7 @@ GameObject:
   - component: {fileID: 1183926558}
   - component: {fileID: 1183926557}
   - component: {fileID: 1183926560}
+  - component: {fileID: 1183926561}
   m_Layer: 5
   m_Name: PlayerField
   m_TagString: Untagged
@@ -1090,6 +1121,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+--- !u!114 &1183926561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183926555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8fa1f93b2324476a663779df616305, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1258811766
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,6 +1332,8 @@ GameObject:
   - component: {fileID: 1285906768}
   - component: {fileID: 1285906767}
   - component: {fileID: 1285906769}
+  - component: {fileID: 1285906770}
+  - component: {fileID: 1285906771}
   m_Layer: 5
   m_Name: EnemyHero
   m_TagString: Untagged
@@ -1368,6 +1413,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a982d61c8b217458297d27dedb573b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1285906770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285906765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87dcb046f626041f4a6f0eed0cb1e759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1285906771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285906765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 570cf27444ce54bd8a00193bfd6d361e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck: 
+  heroHp: 0
+  manaCost: 0
+  defaultManaCost: 0
 --- !u!1 &1332795787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1930,7 +2003,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 775227313}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ChageTurn
+        m_MethodName: OnClickTurnEndButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1990,6 +2063,7 @@ GameObject:
   - component: {fileID: 1978098573}
   - component: {fileID: 1978098572}
   - component: {fileID: 1978098574}
+  - component: {fileID: 1978098575}
   m_Layer: 5
   m_Name: PlayerHero
   m_TagString: Untagged
@@ -2004,7 +2078,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978098570}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2069,6 +2143,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a982d61c8b217458297d27dedb573b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1978098575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978098570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 570cf27444ce54bd8a00193bfd6d361e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deck: 
+  heroHp: 0
+  manaCost: 0
+  defaultManaCost: 0
 --- !u!1 &2112970185
 GameObject:
   m_ObjectHideFlags: 0

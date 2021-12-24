@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,9 +15,15 @@ public class AttackedHero : MonoBehaviour, IDropHandler
             return;
         }
 
+        CardController[] enemyFieldCards = GameManager.instance.GetEnemyFieldCards(attacker.model.isPlayerCard);
+        if (Array.Exists(enemyFieldCards, card => card.model.ability == ABILITY.SHIELD))
+        {
+            return;
+        }
+
         if (attacker.model.canAttack)
         {
-            GameManager.instance.AttackToHero(attacker, true);
+            GameManager.instance.AttackToHero(attacker);
         }
     }
 }

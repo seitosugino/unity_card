@@ -8,6 +8,9 @@ public class CardModel
     public int hp;
     public int at;
     public int cost;
+    public ABILITY ability;
+    public SPELL spell;
+
     public Sprite icon;
     public bool isAlive;
     public bool canAttack;
@@ -22,6 +25,9 @@ public class CardModel
         at = cardEntity.at;
         cost = cardEntity.cost;
         icon = cardEntity.icon;
+        ability = cardEntity.ability;
+        spell = cardEntity.spell;
+
         isAlive = true;
         isPlayerCard = isPlayer;
     }
