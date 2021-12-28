@@ -42,8 +42,18 @@ public class CardModel
         }
     }
 
+    void RecoveryHP(int point)
+    {
+        hp += point;
+    }
+
     public void Attack(CardController card)
     {
         card.model.Damage(at);
+    }
+
+    public void Heal(CardController card)
+    {
+        card.model.RecoveryHP(at);
     }
 }
