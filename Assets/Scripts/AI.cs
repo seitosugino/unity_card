@@ -26,7 +26,7 @@ public class AI : MonoBehaviour
             CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= gameManager.enemy.manaCost);
             CardController enemyCard = selectableHandCardList[0];
             StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform));
-            enemyCard.OnFiled(false);
+            enemyCard.OnFiled();
             handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
             yield return new WaitForSeconds(1);
         }

@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     void StartGame()
     {
         uiManager.HideResultPanel();
-        player.Init(new List<int>() { 1, 2, 7, 1, 2, 3 });
+        player.Init(new List<int>() { 1, 2, 9, 1, 2, 3 });
         enemy.Init(new List<int>() { 1, 2, 3, 1, 2, 3 });
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp);
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost);
@@ -159,6 +159,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public CardController[] GetFieldFieldCards(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            return playerFieldTransform.GetComponentsInChildren<CardController>();
+        }
+        else
+        {
+            return enemyFieldTransform.GetComponentsInChildren<CardController>();
+        }
+    }
+
     public void ChageTurn()
     {
         isPlayerTurn = !isPlayerTurn;
@@ -228,6 +240,19 @@ public class GameManager : MonoBehaviour
             player.heroHp -= attacker.model.at;
         }
         attacker.SetCanAttack(false);
+        uiManager.ShowHeroHP(player.heroHp, enemy.heroHp);
+    }
+
+    public void HealToHeal(CardController healer)
+    {
+        if (healer.model.isPlayerCard)
+        {
+            player.heroHp += healer.model.at;
+        }
+        else
+        {
+            enemy.heroHp += healer.model.at;
+        }
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp);
     }
 
