@@ -24,6 +24,10 @@ public class DropPlace : MonoBehaviour, IDropHandler
             {
                 return;
             }
+            if (card.IsSpell)
+            {
+                return;
+            }
             card.movement.defaultParent = this.transform;
             if (card.model.isFieldCard)
             {

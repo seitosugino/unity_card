@@ -10,6 +10,11 @@ public class CardController : MonoBehaviour
 
     GameManager gameManager;
 
+    public bool IsSpell
+    {
+        get { return model.spell != SPELL.NONE; }
+    }
+
     private void Awake()
     {
         view = GetComponent<CardView>();
@@ -73,6 +78,14 @@ public class CardController : MonoBehaviour
         switch (model.spell)
         {
             case SPELL.DAMAGE_ENEMY_CARD:
+                if (target == null)
+                {
+                    return;
+                }
+                if (target.model.isPlayerCard == model.isPlayerCard)
+                {
+                    return;
+                }
                 Attack(target);
                 target.CheckAlive();
                 break;
@@ -91,6 +104,14 @@ public class CardController : MonoBehaviour
                 gameManager.AttackToHero(this);
                 break;
             case SPELL.HEAL_FRIEND_CARD:
+                if (target == null)
+                {
+                    return;
+                }
+                if (target.model.isPlayerCard != model.isPlayerCard)
+                {
+                    return;
+                }
                 Heal(target);
                 break;
             case SPELL.HEAL_FRIEND_CARDS:
@@ -107,5 +128,34 @@ public class CardController : MonoBehaviour
                 return;
         }
         Destroy(this.gameObject);
+    }
+
+    public bool CanUseSpell()
+    {
+        switch (model.spell)
+        {
+            case SPELL.DAMAGE_ENEMY_CARD:
+            case SPELL.DAMAGE_ENEMY_CARDS:
+                CardController[] enemyCards = gameManager.GetEnemyFieldCards(this.model.isPlayerCard);
+                if (enemyCards.Length>0)
+                {
+                    return true;
+                }
+                return false;
+            case SPELL.DAMAGE_ENEMY_HERO:
+            case SPELL.HEAL_FRIEND_HERO:
+                return true;
+            case SPELL.HEAL_FRIEND_CARD:
+            case SPELL.HEAL_FRIEND_CARDS:
+                CardController[] friendCards = gameManager.GetFieldFieldCards(this.model.isPlayerCard);
+                if (friendCards.Length > 0)
+                {
+                    return true;
+                }
+                return false;
+            case SPELL.NONE:
+                return false;
+        }
+        return false;
     }
 }

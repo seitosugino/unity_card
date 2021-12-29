@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     {
         uiManager.HideResultPanel();
         player.Init(new List<int>() { 1, 2, 9, 1, 2, 3 });
-        enemy.Init(new List<int>() { 1, 2, 3, 1, 2, 3 });
+        enemy.Init(new List<int>() { 8, 2, 3, 1, 2, 3 });
         uiManager.ShowHeroHP(player.heroHp, enemy.heroHp);
         uiManager.ShowManaCost(player.manaCost, enemy.manaCost);
         SettingInitHand();

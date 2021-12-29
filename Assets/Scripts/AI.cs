@@ -21,14 +21,21 @@ public class AI : MonoBehaviour
 
         CardController[] handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
 
-        while (Array.Exists(handCardList, card => card.model.cost <= gameManager.enemy.manaCost))
+        while (Array.Exists(handCardList, card =>(card.model.cost <= gameManager.enemy.manaCost)&& (!card.IsSpell || (card.IsSpell && card.CanUseSpell())) ))
         {
-            CardController[] selectableHandCardList = Array.FindAll(handCardList, card => card.model.cost <= gameManager.enemy.manaCost);
-            CardController enemyCard = selectableHandCardList[0];
-            StartCoroutine(enemyCard.movement.MoveToField(gameManager.enemyFieldTransform));
-            enemyCard.OnFiled();
-            handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
+            CardController[] selectableHandCardList = Array.FindAll(handCardList, card =>(card.model.cost <= gameManager.enemy.manaCost)&& (!card.IsSpell || (card.IsSpell && card.CanUseSpell())));
+            CardController selectCard = selectableHandCardList[0];
+            if (selectCard.IsSpell)
+            {
+                CastSpellOf(selectCard);
+            }
+            else
+            {
+                StartCoroutine(selectCard.movement.MoveToField(gameManager.enemyFieldTransform));
+                selectCard.OnFiled();
+            }
             yield return new WaitForSeconds(1);
+            handCardList = gameManager.enemyHandTransform.GetComponentsInChildren<CardController>();
         }
 
         yield return new WaitForSeconds(1);
@@ -67,5 +74,19 @@ public class AI : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         gameManager.ChageTurn();
+    }
+
+    void CastSpellOf(CardController card)
+    {
+        CardController target = null;
+        if (card.model.spell == SPELL.HEAL_FRIEND_CARD)
+        {
+            target = gameManager.GetFieldFieldCards(card.model.isPlayerCard)[0];
+        }
+        if (card.model.spell == SPELL.DAMAGE_ENEMY_CARD)
+        {
+            target = gameManager.GetEnemyFieldCards(card.model.isPlayerCard)[0];
+        }
+        card.UseSpellTo(target);
     }
 }
