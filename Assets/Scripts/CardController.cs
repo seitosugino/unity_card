@@ -25,7 +25,7 @@ public class CardController : MonoBehaviour
     public void Init(int cardID, bool isPlayer)
     {
         model = new CardModel(cardID, isPlayer);
-        view.Show(model);
+        view.SetCard(model);
     }
 
     public void Attack(CardController enemyCard)
@@ -38,6 +38,11 @@ public class CardController : MonoBehaviour
     {
         model.Heal(friendCard);
         friendCard.RefreshView();
+    }
+
+    public void Show()
+    {
+        view.Show();
     }
 
     public void RefreshView()
@@ -127,6 +132,7 @@ public class CardController : MonoBehaviour
             case SPELL.NONE:
                 return;
         }
+        gameManager.ReduceManaCost(model.cost, model.isPlayerCard);
         Destroy(this.gameObject);
     }
 

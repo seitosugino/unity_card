@@ -25,9 +25,10 @@ public class AI : MonoBehaviour
         {
             CardController[] selectableHandCardList = Array.FindAll(handCardList, card =>(card.model.cost <= gameManager.enemy.manaCost)&& (!card.IsSpell || (card.IsSpell && card.CanUseSpell())));
             CardController selectCard = selectableHandCardList[0];
+            selectCard.Show();
             if (selectCard.IsSpell)
             {
-                CastSpellOf(selectCard);
+                StartCoroutine(CastSpellOf(selectCard));
             }
             else
             {
@@ -76,17 +77,35 @@ public class AI : MonoBehaviour
         gameManager.ChageTurn();
     }
 
-    void CastSpellOf(CardController card)
+    IEnumerator CastSpellOf(CardController card)
     {
         CardController target = null;
-        if (card.model.spell == SPELL.HEAL_FRIEND_CARD)
+        Transform movePosition = null;
+        switch (card.model.spell)
         {
-            target = gameManager.GetFieldFieldCards(card.model.isPlayerCard)[0];
+            case SPELL.DAMAGE_ENEMY_CARD:
+                target = gameManager.GetEnemyFieldCards(card.model.isPlayerCard)[0];
+                movePosition = target.transform;
+                break;
+            case SPELL.HEAL_FRIEND_CARD:
+                target = gameManager.GetFieldFieldCards(card.model.isPlayerCard)[0];
+                movePosition = target.transform;
+                break;
+            case SPELL.DAMAGE_ENEMY_CARDS:
+                movePosition = gameManager.playerFieldTransform;
+                break;
+            case SPELL.HEAL_FRIEND_CARDS:
+                movePosition = gameManager.enemyFieldTransform;
+                break;
+            case SPELL.DAMAGE_ENEMY_HERO:
+                movePosition = gameManager.playerHero;
+                break;
+            case SPELL.HEAL_FRIEND_HERO:
+                movePosition = gameManager.enemyHero;
+                break;
         }
-        if (card.model.spell == SPELL.DAMAGE_ENEMY_CARD)
-        {
-            target = gameManager.GetEnemyFieldCards(card.model.isPlayerCard)[0];
-        }
+        StartCoroutine(card.movement.MoveToField(gameManager.enemyFieldTransform));
+        yield return new WaitForSeconds(0.25f);
         card.UseSpellTo(target);
     }
 }

@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public bool isPlayerTurn;
 
     public Transform playerHero;
+    public Transform enemyHero;
 
     int timeCount;
 

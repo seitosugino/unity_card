@@ -623,6 +623,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 23881634461072336, guid: 9f08d9098719e4744807f4f8eec24eef, type: 3}
   isPlayerTurn: 0
   playerHero: {fileID: 1978098571}
+  enemyHero: {fileID: 1285906766}
 --- !u!4 &775227314
 Transform:
   m_ObjectHideFlags: 0
